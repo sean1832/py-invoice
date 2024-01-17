@@ -12,7 +12,7 @@
         "invoice_number": {
             "label": "invoice_number",
             "value": "ddmmyy",
-            "location": "e16",
+            "location": "f15",
             "type": "number"
         },
         "iteration":{
