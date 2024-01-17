@@ -1,0 +1,59 @@
+[
+    {
+        "id": 0,
+        "personal_detail":{
+            "name": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            },
+            "address": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            },
+            "abn": {
+                "value": "",
+                "location": "",
+                "type": "number"
+            },
+            "email": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            },
+            "phone": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            },
+            "url": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            }
+        },
+        "payment_detail":{
+            "payment_method": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            },
+            "account_name": {
+                "value": "",
+                "location": "",
+                "type": "text"
+            },
+            "bsb": {
+                "value": "",
+                "location": "",
+                "type": "number"
+            },
+            "account_number": {
+                "value": "",
+                "location": "",
+                "type": "number"
+            }
+        }
+    }
+]

@@ -1,0 +1,15 @@
+{
+    "path":{
+        "template": "invoice/data/template.xlsx",
+        "credentials": "invoice/data/credentials.json",
+        "temp": "invoice/data/temp.xlsx",
+        "output_dir": "invoice/data/output/",
+        "profiles_path":{
+            "clients": "invoice/data/profiles/clients.json",
+            "default_params": "invoice/data/profiles/default_params.json",
+            "profiles": "invoice/data/profiles/profiles.json",
+            "providers": "invoice/data/profiles/providers.json",
+            "recipients": "invoice/data/profiles/recipients.json"
+        }
+    }
+}

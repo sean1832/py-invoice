@@ -1,0 +1,35 @@
+[
+    {
+        "id": 0,
+        "name": {
+            "value": "",
+            "location": "",
+            "type": "text"
+        },
+        "address": {
+            "value": "",
+            "location": "",
+            "type": "text"
+        },
+        "abn": {
+            "value": "",
+            "location": "",
+            "type": "number"
+        },
+        "email": {
+            "value": "",
+            "location": "",
+            "type": "text"
+        },
+        "phone": {
+            "value": "",
+            "location": "",
+            "type": "text"
+        },
+        "url": {
+            "value": "",
+            "location": "",
+            "type": "text"
+        }
+    }
+]
