@@ -3,38 +3,52 @@
         "id": 0,
         "name": "default",
         "description": "default parameters for invoice",
-        "start_row": 18,
-        "columns": [
-            {
-                "label": "date",
-                "column": "a",
-                "value": "",
-                "type": "text"
-            },
-            {
-                "label": "unit",
-                "location": "b",
-                "value": 6,
-                "type": "number"
-            },
-            {
-                "label": "rate",
-                "location": "c",
-                "value": 40,
-                "type": "number"
-            },
-            {
-                "label": "description",
-                "location": "d",
-                "value": "",
-                "type": "text"
-            },
-            {
-                "label": "gst_code",
-                "location": "f",
-                "value": "Free",
-                "type": "text"
-            }
-        ]
+        "invoice_date": {
+            "label": "invoice_date",
+            "value": "dd/mm/yyyy",
+            "location": "e15",
+            "type": "date"
+        },
+        "invoice_number": {
+            "label": "invoice_number",
+            "value": "ddmmyy",
+            "location": "e16",
+            "type": "number"
+        },
+        "iteration":{
+            "start_row": 18,
+            "columns": [
+                {
+                    "label": "date",
+                    "column": "a",
+                    "value": "",
+                    "type": "text"
+                },
+                {
+                    "label": "unit",
+                    "location": "b",
+                    "value": 6,
+                    "type": "number"
+                },
+                {
+                    "label": "rate",
+                    "location": "c",
+                    "value": 40,
+                    "type": "number"
+                },
+                {
+                    "label": "description",
+                    "location": "d",
+                    "value": "",
+                    "type": "text"
+                },
+                {
+                    "label": "gst_code",
+                    "location": "f",
+                    "value": "Free",
+                    "type": "text"
+                }
+            ]
+        }
     }
 ]
