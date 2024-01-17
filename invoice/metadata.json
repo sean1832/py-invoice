@@ -1,0 +1,8 @@
+{
+    "name": "invoice",
+    "version": "0.0.1",
+    "description": "A simple program to generate invoice and send it to the customer",
+    "author": "Zeke Zhang",
+    "license": "MIT",
+    "url": "http://github.com/sean1832/py-invoice-cli"
+}
