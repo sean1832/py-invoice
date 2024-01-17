@@ -16,7 +16,7 @@ def build_parser():
     parser_create = subparsers.add_parser('write', 
                                           help='Create an invoice', 
                                           description='Create an invoice. If no arguments are provided, the invoice will be created with the default values.')
-    parser_create.add_argument('customer_name', type=str, help='Customer name')
+    parser_create.add_argument('profile_name', type=str, help='profile_name')
     parser_create.add_argument('date', type=str, help='Invoice date')
     parser_create.add_argument('--hour', type=float, help='Overwrite hours worked')
     parser_create.add_argument('--rate', type=float, help='Overwrite Hourly rate')
@@ -38,13 +38,15 @@ def build_parser():
 
     # send command
     parser_send = subparsers.add_parser('send', help='Send an invoice')
-    parser_send.add_argument('--email', type=str, help='Target email address')
-    parser_send.add_argument('--profile_path', type=str, help='Path to profile file')
-    parser_send.add_argument('--subject', type=str, help='Subject of the email')
-    parser_send.add_argument('--append_subject', type=str, help='Msg to append to subject of the email')
-    parser_send.add_argument('--body', type=str, help='Body of the email')
+    parser_send.add_argument('--profile_number', type=str, help='Profile number')
+    parser_send.add_argument('--profile_name', type=str, help='Profile name')
+    parser_send.add_argument('--email', type=str, help='Overwrite Target email address')
+    parser_send.add_argument('--profile_path', type=str, help='Overwrite Path to profile file')
+    parser_send.add_argument('--subject', type=str, help='Overwrite Subject of the email')
+    parser_send.add_argument('--append_subject', type=str, help='Overwrite Msg to append to subject of the email')
+    parser_send.add_argument('--body', type=str, help='Overwrite Body of the email')
     parser_send.add_argument('--append_body', type=str, help='Msg to append to body of the email')
-    parser_send.add_argument('--attach', type=str, help='Path of invoice attach to email')
+    parser_send.add_argument('--attach', type=str, help='Overwrite Path of invoice attach to email')
     parser_send.add_argument('--silent', action='store_true', help='Send email without confirmation')
     parser_send.set_defaults(func=commands.send)
 
