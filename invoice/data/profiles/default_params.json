@@ -39,7 +39,7 @@
                 {
                     "label": "description",
                     "location": "d",
-                    "value": "",
+                    "value": "Service Charge",
                     "type": "text"
                 },
                 {

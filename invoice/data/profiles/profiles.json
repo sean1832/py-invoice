@@ -3,7 +3,7 @@
         "id": 0,
         "name": "default",
         "params": "default",
-        "provider": "",
+        "provider": "Provider 1",
         "client": "",
         "recipient": "",
         "email_param":{

@@ -2,19 +2,19 @@
     {
         "id": 0,
         "name": {
-            "value": "",
-            "location": "",
+            "value": "Client 1",
+            "location": "b10",
             "type": "text"
         },
         "address": {
-            "value": "",
-            "location": "",
+            "value": "somewhere",
+            "location": "b11",
             "type": "text"
         },
         "abn": {
             "value": "",
             "location": "",
-            "type": "number"
+            "type": "text"
         },
         "email": {
             "value": "",
@@ -22,8 +22,8 @@
             "type": "text"
         },
         "phone": {
-            "value": "",
-            "location": "",
+            "value": "12345678",
+            "location": "b12",
             "type": "text"
         },
         "url": {

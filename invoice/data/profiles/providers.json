@@ -3,28 +3,28 @@
         "id": 0,
         "personal_detail":{
             "name": {
-                "value": "",
-                "location": "",
+                "value": "Provider 1",
+                "location": "b3",
                 "type": "text"
             },
             "address": {
-                "value": "",
-                "location": "",
+                "value": "xxxxxxxx",
+                "location": "b4",
                 "type": "text"
             },
             "abn": {
-                "value": "",
-                "location": "",
-                "type": "number"
+                "value": "123456789",
+                "location": "b5",
+                "type": "text"
             },
             "email": {
-                "value": "",
-                "location": "",
+                "value": "something@email.com",
+                "location": "b6",
                 "type": "text"
             },
             "phone": {
-                "value": "",
-                "location": "",
+                "value": "123456789",
+                "location": "b7",
                 "type": "text"
             },
             "url": {
@@ -35,24 +35,24 @@
         },
         "payment_detail":{
             "payment_method": {
-                "value": "",
-                "location": "",
+                "value": "EFT Payment",
+                "location": "a28",
                 "type": "text"
             },
             "account_name": {
-                "value": "",
-                "location": "",
+                "value": "Provider 1",
+                "location": "b28",
                 "type": "text"
             },
             "bsb": {
-                "value": "",
-                "location": "",
-                "type": "number"
+                "value": "123456",
+                "location": "c28",
+                "type": "text"
             },
             "account_number": {
-                "value": "",
-                "location": "",
-                "type": "number"
+                "value": "12345678",
+                "location": "d28",
+                "type": "text"
             }
         }
     }
