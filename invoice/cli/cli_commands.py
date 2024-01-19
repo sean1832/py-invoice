@@ -219,6 +219,10 @@ def send(args):
     server.send_email(recipient_email, subject, body, cache_data["pdf_path"])
     print("Email sent successfully!")
 
+    # clean up
+    api.clean_up()
+    print("Clean up successful!")
+
 def login(args):
     """Set up credentials"""
     path_info = info.Path_info()

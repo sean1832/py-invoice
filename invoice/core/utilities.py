@@ -17,14 +17,6 @@ def is_numeric(value):
         return False
 
 
-def delete_file(path):
-    """delete file"""
-    try:
-        pathlib.Path(path).unlink()
-    except Exception as e:
-        print(f"Error deleting file: {e}")
-        traceback.print_exc()
-
 
 def concat_pos(column, row):
     """concat position"""

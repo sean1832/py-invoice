@@ -17,6 +17,13 @@ def search_json_by_key_value(json, key, value):
             return item
     return None
 
+def delete_file(path):
+    """delete file"""
+    try:
+        pathlib.Path(path).unlink()
+    except Exception as e:
+        print(f"Error deleting file: {e}")
+        traceback.print_exc()
 
 def search_json_list_by_key_value(json, key, value):
     result = []

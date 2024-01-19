@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from invoice.core import info
 from invoice.core import utilities as utils
 from invoice.core.excel_worker import Excel_worker
 from invoice.core.profile import Profile
@@ -90,4 +91,12 @@ def remove_row(row_index: int, start_row: int, template_path: str):
     """remove a row from an invoice"""
     worker = Excel_worker(template_path, 0)
     worker.remove_row(row_index, start_row, row_range=5)
+
+def clean_up():
+    """Clean up"""
+    # delete session cache
+    file_io.delete_session_cache()
+
+    # delete instance file
+    Excel_worker().clean_up()
 

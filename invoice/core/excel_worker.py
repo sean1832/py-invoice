@@ -4,12 +4,16 @@ from typing import Any
 
 import openpyxl
 
-from invoice.core import info
+from invoice.core import file_io, info
 from invoice.core import utilities as utils
 
 
 class Excel_worker:
-    def __init__(self, path: str, sheet: int):
+    def __init__(self, path: str | None = None, sheet: int | None = None):
+        # Check if either both parameters are provided or neither is provided
+        if (path is None) != (sheet is None):
+            raise ValueError("Both 'path' and 'sheet' must be provided together or omitted")
+
         self.path = path
         self.sheet = sheet
 
@@ -180,7 +184,7 @@ class Excel_worker:
     def clean_up(self):
         """clean up instant excel file"""
         try:
-            utils.delete_file(self._instant_path)
+            file_io.delete_file(self._instant_path)
         except Exception as e:
             print(f"Error cleaning up: {e}")
             traceback.print_exc()
