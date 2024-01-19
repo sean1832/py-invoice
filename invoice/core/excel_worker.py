@@ -48,6 +48,8 @@ class Excel_worker:
             wb_path = self._instant_path
             if pathlib.Path(wb_path).is_file() is False:
                 raise ValueError("Excel file not instantiated!")
+            if self.path is None or self.sheet is None:
+                raise ValueError("Class must specify 'path' and 'sheet'!")
 
             wb = openpyxl.load_workbook(wb_path)
             sheet = wb.worksheets[self.sheet]
@@ -75,6 +77,8 @@ class Excel_worker:
             wb_path = self._instant_path
             if pathlib.Path(wb_path).is_file() is False:
                 raise ValueError("Excel file not instantiated!")
+            if self.path is None or self.sheet is None:
+                raise ValueError("Class must specify 'path' and 'sheet'!")
 
             wb = openpyxl.load_workbook(wb_path)
             sheet = wb.worksheets[self.sheet]
@@ -91,7 +95,9 @@ class Excel_worker:
             wb_path = self._instant_path
             if pathlib.Path(wb_path).is_file() is False:
                 raise ValueError("Excel file not instantiated!")
-
+            if self.path is None or self.sheet is None:
+                raise ValueError("Class must specify 'path' and 'sheet'!")
+            
             wb = openpyxl.load_workbook(wb_path)
             sheet = wb.worksheets[self.sheet]
             non_empty_rows = []
@@ -141,6 +147,8 @@ class Excel_worker:
             wb_path = self._instant_path
             if pathlib.Path(wb_path).is_file() is False:
                 raise ValueError("Excel file not instantiated!")
+            if self.path is None or self.sheet is None:
+                raise ValueError("Class must specify 'path' and 'sheet'!")
 
             wb = openpyxl.load_workbook(wb_path)
             sheet = wb.worksheets[self.sheet]
@@ -168,6 +176,9 @@ class Excel_worker:
     def instantiate(self):
         """instantiate excel file"""
         try:
+            if self.path is None or self.sheet is None:
+                raise ValueError("Class must specify 'path' and 'sheet'!")
+            
             wb = openpyxl.load_workbook(self.path)
             wb.save(self._instant_path)
             return self._instant_path
