@@ -104,8 +104,8 @@ def remove_row(row_index: int, start_row: int, template_path: str):
 
 def clean_up():
     """Clean up"""
-    # delete session cache
-    file_io.delete_session_cache()
+    # # delete session cache
+    # file_io.delete_session_cache()
 
     # delete instance file
     Excel_worker().clean_up()
