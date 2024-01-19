@@ -1,12 +1,12 @@
 from invoice.cli import cli_parser
-from invoice.core.meta import metadata
+from invoice.core.info import Meta_info
 
 
 def main():
     parser = cli_parser.build_parser()
     args = parser.parse_args()
 
-    meta = metadata()
+    meta = Meta_info()
 
     if args.version:
         print(meta.version)

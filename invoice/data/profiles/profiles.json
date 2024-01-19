@@ -4,11 +4,7 @@
         "name": "default",
         "params": "default",
         "provider": "Provider 1",
-        "client": "",
-        "recipient": "",
-        "email_param":{
-            "subject": "Invoice from {{provider.name}} - {{dd}}{{mm}}{{yy}}",
-            "body": "Please find attached the invoice for the services rendered."
-        }
+        "client": "Client 1",
+        "recipient": "pm"
     }
 ]

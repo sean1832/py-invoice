@@ -1,8 +1,9 @@
 {
     "path":{
         "template": "invoice/data/template.xlsx",
-        "credentials": "invoice/data/credentials.json",
-        "temp": "invoice/data/temp.xlsx",
+        "instance": "invoice/data/instance.xlsx",
+        "credentials": "invoice/data/.credentials",
+        "key": "invoice/data/.key",
         "output_dir": "invoice/data/output/",
         "profiles_path":{
             "clients": "invoice/data/profiles/clients.json",
@@ -11,5 +12,9 @@
             "providers": "invoice/data/profiles/providers.json",
             "recipients": "invoice/data/profiles/recipients.json"
         }
+    },
+    "smtp":{
+        "host": "smtp.gmail.com",
+        "port": 465
     }
 }

@@ -1,59 +1,68 @@
 [
     {
         "id": 0,
-        "personal_detail":{
-            "name": {
+        "name": "Provider 1",
+        "datas": [
+            {
+                "label": "name",
                 "value": "Provider 1",
                 "location": "b3",
-                "type": "text"
+                "type": "string"
             },
-            "address": {
+            {
+                "label": "address",
                 "value": "xxxxxxxx",
                 "location": "b4",
-                "type": "text"
+                "type": "string"
             },
-            "abn": {
+            {
+                "label": "abn",
                 "value": "123456789",
                 "location": "b5",
-                "type": "text"
+                "type": "string"
             },
-            "email": {
+            {
+                "label": "email",
                 "value": "something@email.com",
                 "location": "b6",
-                "type": "text"
+                "type": "string"
             },
-            "phone": {
+            {
+                "label": "phone",
                 "value": "123456789",
                 "location": "b7",
-                "type": "text"
+                "type": "string"
             },
-            "url": {
+            {
+                "label": "url",
                 "value": "",
                 "location": "",
-                "type": "text"
-            }
-        },
-        "payment_detail":{
-            "payment_method": {
+                "type": "string"
+            },
+            {
+                "label": "payment_method",
                 "value": "EFT Payment",
-                "location": "a28",
-                "type": "text"
+                "location": "a31",
+                "type": "string"
             },
-            "account_name": {
+            {
+                "label": "account_name",
                 "value": "Provider 1",
-                "location": "b28",
-                "type": "text"
+                "location": "b31",
+                "type": "string"
             },
-            "bsb": {
+            {
+                "label": "bsb",
                 "value": "123456",
-                "location": "c28",
-                "type": "text"
+                "location": "c31",
+                "type": "string"
             },
-            "account_number": {
+            {
+                "label": "account_number",
                 "value": "12345678",
-                "location": "d28",
-                "type": "text"
+                "location": "d31",
+                "type": "string"
             }
-        }
+        ]
     }
 ]

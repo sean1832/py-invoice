@@ -1,36 +1,266 @@
+from datetime import datetime
+from pathlib import Path
+
+from invoice.core import api, credentials, file_io, info, smtp, utilities
+from invoice.core.profile import Profile
+
+from . import cli_prompt
+
 
 def write(args):
     """Create invoice"""
-    raise NotImplementedError
+    profile_name = args.profile_name
 
-def delete(args):
-    """Delete an invoice"""
-    raise NotImplementedError
+    path_info = info.Path_info()
+
+    # parse default_param.json file to get default values
+    profile_obj = Profile()
+    profile = profile_obj.get_profile_by_name(profile_name)
+    param = profile_obj.get_default_param_by_name(profile["params"])
+
+    # date
+    date_val = args.date
+    date_loc = param["iteration"]["date"]["column"]
+    date = (date_loc, date_val)
+
+    # iteration_start_row
+    iteration_start_row = param["iteration"]["start_row"]
+
+    # hour
+    hour_loc = param["iteration"]["unit"]["column"]
+    hour_val = args.hour
+    if hour_val is None:
+        hour = (hour_loc, param["iteration"]["unit"]["value"])
+    else:
+        hour = (hour_loc, hour_val)
+
+    # rate
+    rate_loc = param["iteration"]["rate"]["column"]
+    rate_val = args.rate
+    if rate_val is None:
+        rate = (rate_loc, param["iteration"]["rate"]["value"])
+    else:
+        rate = (rate_loc, rate_val)
+
+    # description
+    description_loc = param["iteration"]["description"]["column"]
+    description_val = args.description
+    if description_val is None:
+        description = (description_loc, param["iteration"]["description"]["value"])
+    else:
+        description = (description_loc, description_val)
+
+    # gst_code
+    gst_code_loc = param["iteration"]["gst_code"]["column"]
+    gst_code_val = args.gst_code
+    if gst_code_val is None:
+        gst_code = (gst_code_loc, param["iteration"]["gst_code"]["value"])
+    else:
+        gst_code = (gst_code_loc, gst_code_val)
+
+    # invoice_number
+    invoice_number_loc = param["invoice_number"]["location"]
+    invoice_number_val = args.invoice_number
+    if invoice_number_val is None:
+        invoice_num_format = param["invoice_number"]["value"]
+        invoice_number = (
+            invoice_number_loc,
+            utilities.convert_date(datetime.now(), invoice_num_format),
+        )
+    else:
+        invoice_number = (invoice_number_loc, invoice_number_val)
+
+    # invoice_date
+    invoice_date_loc = param["invoice_date"]["location"]
+    invoice_date_val = utilities.convert_date(datetime.now(), "dd/mm/yyyy")
+    invoice_date = (invoice_date_loc, invoice_date_val)
+
+    # template_path
+    template_path = args.template_path
+    if template_path is None:
+        template_path = path_info.template
+    else:
+        if not Path(template_path).exists() or not Path(template_path).is_file():
+            raise FileNotFoundError(f"Template file not found: {template_path}")
+        if not template_path.endswith(".xlsx"):
+            raise ValueError("Template file must be an Excel file")
+
+    # calculate amount
+    amount_val = hour[1] * rate[1]
+    amount_loc = param["iteration"]["amount"]["column"]
+    amount = (amount_loc, amount_val)
+
+    # flags
+    append_row = args.append
+    silent = args.silent
+
+    api.write_datas(
+        profile_name,
+        iteration_start_row,
+        date,
+        hour,
+        rate,
+        description,
+        amount,
+        gst_code,
+        invoice_number,
+        invoice_date,
+        template_path,
+        append_row,
+        silent,
+    )
+    print("Invoice created successfully!")
+
+    # write to cache
+    cache_data = {
+        "profile_name": profile_name,
+        "date": date[1],
+        "hour": hour[1],
+        "rate": rate[1],
+        "description": description[1],
+        "gst_code": gst_code[1],
+        "invoice_number": invoice_number[1],
+        "template_path": template_path,
+        "append": append_row,
+        "silent": silent,
+        "timestamp": datetime.now().timestamp(),
+    }
+    file_io.create_session_cache(cache_data)
+
+
+def remove(args):
+    """remove a row from an invoice"""
+    # read session cache
+    cache_data = file_io.read_session_cache()
+
+    profile_obj = Profile()
+    profile = profile_obj.get_profile_by_name(cache_data["profile_name"])
+    param = profile_obj.get_default_param_by_name(profile["params"])
+    path_info = info.Path_info()
+    template_path = path_info.template
+    start_row = param["iteration"]["start_row"]
+    api.remove_row(args.row_index, start_row, template_path)
+
+
+def export(args):
+    """export an invoice to pdf"""
+    # read session cache
+    cache_data = file_io.read_session_cache()
+    profile_name = cache_data["profile_name"]
+    invoice_number = cache_data["invoice_number"]
+
+    # excel file path
+    path_info = info.Path_info()
+    instance_path = path_info.instance
+
+    # output dir for pdf
+    pdf_output_dir = path_info.output_dir
+
+    # pdf file path
+    pdf_path = utilities.get_pdf_path(pdf_output_dir, profile_name, invoice_number)
+
+    file_io.excel_to_pdf(instance_path, pdf_path)
+
+    cache_data["pdf_path"] = str(pdf_path)
+    file_io.create_session_cache(cache_data)
+
 
 def send(args):
     """Send an invoice"""
-    raise NotImplementedError
+    cache_data = file_io.read_session_cache()
+    profile_name = cache_data["profile_name"]
+    profile_obj = Profile()
+    profile = profile_obj.get_profile_by_name(profile_name)
+    recipient = profile_obj.get_recipient_by_name(profile["recipient"])
+    path_info = info.Path_info()
+
+    # check if user has set up credentials
+    if not Path(path_info.credentials).exists():
+        print("Credentials file not found. Please run 'invoice login' to set up credentials")
+        return
+
+    # email
+    recipient_email = recipient["email"]
+
+    # subject
+    subject_raw = recipient["subject"]
+    # parse subject
+    subject_keys = utilities.parse_keys(subject_raw, r"\{\{(.*?)\}\}")
+    subject = utilities.replace_keys(subject_raw, subject_keys, (r"{{", r"}}"))
+    print(subject)
+
+    # body
+    body = recipient["body"]
+    # parse body
+    body_keys = utilities.parse_keys(body, r"\{\{(.*?)\}\}")
+    body = utilities.replace_keys(body, body_keys, (r"{{", r"}}"))
+    print(body)
+
+    # read config
+    config = file_io.read_json(path_info.config)["smtp"]
+    smtp_host = config["host"]
+    smtp_port = config["port"]
+
+    email, password = credentials.decrypt_from_json()
+
+    server = smtp.Smtp(
+        smtp_host, smtp_port, email, password
+    )
+
+    # validate email
+    if not args.skip:
+        is_valid, error = server.validate()
+        if not is_valid:
+            print(f"Login failed. Please run 'invoice login' to set up credentials.\n{error}")
+            return
+        else:
+            print("Login successful!")
+
+    server.send_email(recipient_email, subject, body, cache_data["pdf_path"])
+    print("Email sent successfully!")
+
+def login(args):
+    """Set up credentials"""
+    path_info = info.Path_info()
+    config = file_io.read_json(path_info.config)["smtp"]
+    smtp_host = config["host"]
+    smtp_port = config["port"]
+
+    while True:
+        email, password = cli_prompt.login_prompt(args.show)
+        server = smtp.Smtp(
+            smtp_host, smtp_port, email, password
+        )
+        is_login, error = server.validate()
+        if is_login:
+            credentials.encrypt_to_json(email, password, hidden=True)
+            print("Login successful!")
+            break
+        else:
+            print(f"Login failed. Please try again. {error}")
 
 def list(args):
     """List invoices"""
     raise NotImplementedError
 
+
 def show_templates(args):
     """Show templates"""
     raise NotImplementedError
+
 
 def show_profiles(args):
     """Show profiles"""
     raise NotImplementedError
 
+
 def show_invoice(args):
     """Show invoice"""
     raise NotImplementedError
 
+
 def show_config(args):
     """Show config"""
     raise NotImplementedError
-
-
 
 

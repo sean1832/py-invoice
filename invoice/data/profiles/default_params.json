@@ -4,51 +4,38 @@
         "name": "default",
         "description": "default parameters for invoice",
         "invoice_date": {
-            "label": "invoice_date",
             "value": "dd/mm/yyyy",
-            "location": "e15",
-            "type": "date"
+            "location": "f15"
         },
         "invoice_number": {
-            "label": "invoice_number",
-            "value": "ddmmyy",
-            "location": "f15",
-            "type": "number"
+            "value": "yymmdd",
+            "location": "e15"
         },
         "iteration":{
             "start_row": 18,
-            "columns": [
-                {
-                    "label": "date",
-                    "column": "a",
-                    "value": "",
-                    "type": "text"
-                },
-                {
-                    "label": "unit",
-                    "location": "b",
-                    "value": 6,
-                    "type": "number"
-                },
-                {
-                    "label": "rate",
-                    "location": "c",
-                    "value": 40,
-                    "type": "number"
-                },
-                {
-                    "label": "description",
-                    "location": "d",
-                    "value": "Service Charge",
-                    "type": "text"
-                },
-                {
-                    "label": "gst_code",
-                    "location": "f",
-                    "value": "Free",
-                    "type": "text"
-                }
-            ]
+            "date":{
+                "column": "a"
+            },
+            "unit":{
+                "column": "b",
+                "value": 6
+            },
+            "rate":{
+                "column": "c",
+                "value": 40
+            },
+            
+            "description":{
+                "column": "d",
+                "value": "Service Charge"
+            },
+            "amount" : {
+                "column": "e"
+            },
+            "gst_code":{
+                "column": "f",
+                "value": "Free"
+            }
         }
     }
 ]

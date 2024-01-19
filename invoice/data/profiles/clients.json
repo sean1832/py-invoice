@@ -1,35 +1,44 @@
 [
     {
         "id": 0,
-        "name": {
-            "value": "Client 1",
-            "location": "b10",
-            "type": "text"
-        },
-        "address": {
-            "value": "somewhere",
-            "location": "b11",
-            "type": "text"
-        },
-        "abn": {
-            "value": "",
-            "location": "",
-            "type": "text"
-        },
-        "email": {
-            "value": "",
-            "location": "",
-            "type": "text"
-        },
-        "phone": {
-            "value": "12345678",
-            "location": "b12",
-            "type": "text"
-        },
-        "url": {
-            "value": "",
-            "location": "",
-            "type": "text"
-        }
+        "name": "Client 1",
+        "datas":[
+            {
+                "label": "name",
+                "value": "Client 1",
+                "location": "b10",
+                "type": "string"
+            },
+            {
+                "label": "address",
+                "value": "somewhere",
+                "location": "b11",
+                "type": "string"
+            },
+            {
+                "label": "abn",
+                "value": "",
+                "location": "",
+                "type": "string"
+            },
+            {
+                "label": "email",
+                "value": "",
+                "location": "",
+                "type": "string"
+            },
+            {
+                "label": "phone",
+                "value": "12345678",
+                "location": "b12",
+                "type": "string"
+            },
+            {
+                "label": "url",
+                "value": "",
+                "location": "",
+                "type": "string"
+            }
+        ]
     }
 ]

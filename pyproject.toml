@@ -1,0 +1,2 @@
+[tool.black]
+force-exclude = ['invoice/cli/cli_parser.py', 'invoice/core/info.py']
