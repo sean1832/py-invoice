@@ -188,8 +188,11 @@ def send(args):
     profile = profile_obj.get_profile_by_name(profile_name)
     recipient = profile_obj.get_recipient_by_name(profile["recipient"])
 
+    print("=== Email ===")
+
     # email
     recipient_email = recipient["email"]
+    print(recipient_email)
 
     # subject
     subject_raw = recipient["subject"]
@@ -215,19 +218,30 @@ def send(args):
     server = smtp.Smtp(
         smtp_host, smtp_port, email, password
     )
+    print("=== Attachment ===")
+    print(cache_data["pdf_path"])
 
+    print("=== Confirmation ===")
+    user_input = input("Send email? (y/n)")
+    if user_input.lower() != "y":
+        print("Aborted.")
+        return
+    
     # validate email
     if not args.skip:
+        print("=== Login ===")
         is_valid, error = server.validate()
         if not is_valid:
             print(f"Login failed. Please run 'invoice login' to set up credentials.\n{error}")
             return
         else:
             print("Login successful!")
-
+    
+    print("=== Sending email ===")
     server.send_email(recipient_email, subject, body, cache_data["pdf_path"])
     print("Email sent successfully!")
 
+    print("=== Clean up ===")
     # clean up
     api.clean_up()
     print("Clean up successful!")
