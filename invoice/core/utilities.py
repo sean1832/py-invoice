@@ -1,6 +1,5 @@
 import pathlib
 import re
-import traceback
 from datetime import datetime
 from types import NotImplementedType
 from typing import Tuple

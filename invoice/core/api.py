@@ -1,11 +1,10 @@
 from typing import Tuple
 
-from invoice.core import info
 from invoice.core import utilities as utils
 from invoice.core.excel_worker import Excel_worker
 from invoice.core.profile import Profile
 
-from . import credentials, file_io, smtp
+from . import file_io
 
 
 def write_datas(
