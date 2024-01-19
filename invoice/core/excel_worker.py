@@ -18,7 +18,7 @@ class Excel_worker:
         self.sheet = sheet
 
         # private variables
-        path_info = info.Path_info()
+        path_info = info.PathInfo()
         self._instant_path = path_info.instance
 
     def write_cell(self, cell: str, value: Any, value_type: str = "string"):

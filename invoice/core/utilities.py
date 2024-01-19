@@ -1,5 +1,9 @@
+import os
 import pathlib
 import re
+import shutil
+import subprocess
+import sys
 from datetime import datetime
 from types import NotImplementedType
 from typing import Tuple
@@ -15,7 +19,25 @@ def is_numeric(value):
     except ValueError:
         return False
 
+def open_directory(path):
+    # Check if the path is a valid directory
+    if not os.path.isdir(path):
+        print(f"The path {path} is not a valid directory.")
+        return
 
+    # check if vscode is installed
+    if shutil.which("code"):
+        full_path = pathlib.Path(path).resolve()
+        print(f"Opening directory in vscode {full_path}")
+        subprocess.run(["code", full_path], shell=True)
+        return
+    # Open the directory based on the operating system
+    if sys.platform == 'win32':
+        subprocess.run(['explorer', path])
+    elif sys.platform == 'darwin':  # macOS
+        subprocess.run(['open', path])
+    else:  # Linux and other Unix-like OS
+        subprocess.run(['xdg-open', path])
 
 def concat_pos(column, row):
     """concat position"""

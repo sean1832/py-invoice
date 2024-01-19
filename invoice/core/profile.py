@@ -4,7 +4,7 @@ from invoice.core.file_io import read_json, search_json_by_key_value
 
 class Profile:
     def __init__(self):
-        self._info = info.Path_info()
+        self._info = info.PathInfo()
         self.profile = None
 
     def get_profile_by_name(self, profile_name: str):

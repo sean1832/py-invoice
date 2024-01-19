@@ -4,7 +4,7 @@ from invoice.core import utilities as utils
 from invoice.core.excel_worker import Excel_worker
 from invoice.core.profile import Profile
 
-from . import file_io
+from . import credentials, dummy, file_io, info, smtp
 
 
 def write_datas(
@@ -85,6 +85,17 @@ def write_datas(
         if not data["location"] == "" or not data["value"] == "":
             worker.write_cell(data["location"], data["value"], data["type"])
 
+def login(smtp_host, smtp_port, email, password):
+    server = smtp.Smtp(
+        smtp_host, smtp_port, email, password
+    )
+    is_login, error = server.validate()
+    if is_login:
+        credentials.encrypt_to_json(email, password, hidden=False)
+        return True, ""
+    else:
+        return False, error
+        
 
 def remove_row(row_index: int, start_row: int, template_path: str):
     """remove a row from an invoice"""

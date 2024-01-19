@@ -11,28 +11,27 @@
             "value": "yymmdd",
             "location": "e15"
         },
-        "iteration":{
+        "iteration": {
             "start_row": 18,
-            "date":{
+            "date": {
                 "column": "a"
             },
-            "unit":{
+            "unit": {
                 "column": "b",
                 "value": 6
             },
-            "rate":{
+            "rate": {
                 "column": "c",
                 "value": 40
             },
-            
-            "description":{
+            "description": {
                 "column": "d",
                 "value": "Service Charge"
             },
-            "amount" : {
+            "amount": {
                 "column": "e"
             },
-            "gst_code":{
+            "gst_code": {
                 "column": "f",
                 "value": "Free"
             }

@@ -13,3 +13,5 @@ output/
 instance.xlsx
 .credentials
 .key
+
+profiles/*

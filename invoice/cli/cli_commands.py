@@ -1,3 +1,4 @@
+import pathlib
 from datetime import datetime
 from pathlib import Path
 
@@ -6,12 +7,14 @@ from invoice.core.profile import Profile
 
 from . import cli_prompt
 
+PATH_INFO = info.PathInfo()
 
 def write(args):
     """Create invoice"""
+    if not PATH_INFO.check_profiles_path():
+        print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
+        return
     profile_name = args.profile_name
-
-    path_info = info.Path_info()
 
     # parse default_param.json file to get default values
     profile_obj = Profile()
@@ -78,7 +81,7 @@ def write(args):
     # template_path
     template_path = args.template_path
     if template_path is None:
-        template_path = path_info.template
+        template_path = PATH_INFO.template
     else:
         if not Path(template_path).exists() or not Path(template_path).is_file():
             raise FileNotFoundError(f"Template file not found: {template_path}")
@@ -130,27 +133,32 @@ def write(args):
 
 def remove(args):
     """remove a row from an invoice"""
+    if not PATH_INFO.check_profiles_path():
+        print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
+        return
     # read session cache
     cache_data = file_io.read_session_cache()
 
     profile_obj = Profile()
     profile = profile_obj.get_profile_by_name(cache_data["profile_name"])
     param = profile_obj.get_default_param_by_name(profile["params"])
-    path_info = info.Path_info()
-    template_path = path_info.template
+    template_path = PATH_INFO.template
     start_row = param["iteration"]["start_row"]
     api.remove_row(args.row_index, start_row, template_path)
 
 
 def export(args):
     """export an invoice to pdf"""
+    if not PATH_INFO.check_profiles_path():
+        print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
+        return 
     # read session cache
     cache_data = file_io.read_session_cache()
     profile_name = cache_data["profile_name"]
     invoice_number = cache_data["invoice_number"]
 
     # excel file path
-    path_info = info.Path_info()
+    path_info = info.PathInfo()
     instance_path = path_info.instance
 
     # output dir for pdf
@@ -167,17 +175,18 @@ def export(args):
 
 def send(args):
     """Send an invoice"""
+    if not PATH_INFO.check_profiles_path():
+        print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
+        return
+    if not PATH_INFO.check_credential_path():
+        print("Credentials path not found. Please run 'invoice login' to set up credentials")
+        return
+
     cache_data = file_io.read_session_cache()
     profile_name = cache_data["profile_name"]
     profile_obj = Profile()
     profile = profile_obj.get_profile_by_name(profile_name)
     recipient = profile_obj.get_recipient_by_name(profile["recipient"])
-    path_info = info.Path_info()
-
-    # check if user has set up credentials
-    if not Path(path_info.credentials).exists():
-        print("Credentials file not found. Please run 'invoice login' to set up credentials")
-        return
 
     # email
     recipient_email = recipient["email"]
@@ -197,7 +206,7 @@ def send(args):
     print(body)
 
     # read config
-    config = file_io.read_json(path_info.config)["smtp"]
+    config = file_io.read_json(PATH_INFO.config)["smtp"]
     smtp_host = config["host"]
     smtp_port = config["port"]
 
@@ -225,23 +234,47 @@ def send(args):
 
 def login(args):
     """Set up credentials"""
-    path_info = info.Path_info()
-    config = file_io.read_json(path_info.config)["smtp"]
+    config = file_io.read_json(PATH_INFO.config)["smtp"]
     smtp_host = config["host"]
     smtp_port = config["port"]
 
     while True:
         email, password = cli_prompt.login_prompt(args.show)
-        server = smtp.Smtp(
-            smtp_host, smtp_port, email, password
-        )
-        is_login, error = server.validate()
-        if is_login:
-            credentials.encrypt_to_json(email, password, hidden=True)
+        result, error = api.login(smtp_host, smtp_port, email, password)
+        if result:
             print("Login successful!")
             break
         else:
-            print(f"Login failed. Please try again. {error}")
+            print(f"Login failed. {error}")
+
+def init(args):
+    """Create dummy data"""
+    if PATH_INFO.check_profiles_path():
+        asw = input("Profiles path already exists. Do you want to overwrite it? (y/n)")
+        if asw == "n":
+            print("Aborted.")
+            return  
+
+    api.dummy.create_dummy()
+    print("Dummy data created successfully!")
+
+    # login
+    
+    config = file_io.read_json(PATH_INFO.config)["smtp"]
+    profile_root = pathlib.Path(PATH_INFO.profiles).parent
+    smtp_host = config["host"]
+    smtp_port = config["port"]
+
+    while True:
+        email, password = cli_prompt.login_prompt(args.show)
+        result, error = api.login(smtp_host, smtp_port, email, password)
+        if result:
+            print("Login successful!")
+            break
+        else:
+            print(f"Login failed. {error}")
+    
+    utilities.open_directory(profile_root)
 
 def list(args):
     """List invoices"""

@@ -9,9 +9,11 @@ import win32com.client
 def read_json(path):
     return json.load(open(path, "r"))
 
-def write_json(path, content):
+def write_json(path: str | pathlib.Path, content):
     # create directory if not exists
-    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+    path = pathlib.Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
     json.dump(content, open(path, "w"), indent=4)
 def search_json_by_key_value(json, key, value):
     for item in json:

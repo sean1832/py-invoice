@@ -1,12 +1,12 @@
 import argparse
 
 from invoice.cli import cli_commands as commands
-from invoice.core.info import Meta_info
+from invoice.core.info import MetaInfo
 
 
 def build_parser():
     """Build parser"""
-    meta = Meta_info()
+    meta = MetaInfo()
     parser = argparse.ArgumentParser(description=f"Invoice generator v{meta.version}")
     subparsers = parser.add_subparsers(help="commands")
 
@@ -57,6 +57,11 @@ def build_parser():
     parser_login = subparsers.add_parser("login", help="Login to smtp server")
     parser_login.add_argument("-s", "--show", action="store_true", help="Show password in plain text")
     parser_login.set_defaults(func=commands.login)
+
+    # init command
+    parser_dummy = subparsers.add_parser("init", help="Initialize the program")
+    parser_dummy.add_argument("-s", "--show", action="store_true", help="Show password in plain text")
+    parser_dummy.set_defaults(func=commands.init)
 
     # list command
     parser_list = subparsers.add_parser("list", help="List invoices")

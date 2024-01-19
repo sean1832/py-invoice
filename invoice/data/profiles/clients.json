@@ -2,7 +2,7 @@
     {
         "id": 0,
         "name": "Client 1",
-        "datas":[
+        "datas": [
             {
                 "label": "name",
                 "value": "Client 1",
