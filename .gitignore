@@ -14,4 +14,4 @@ instance.xlsx
 .credentials
 .key
 
-profiles/*
+profiles/
