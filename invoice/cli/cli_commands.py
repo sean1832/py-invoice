@@ -181,6 +181,7 @@ def export(args):
     pdf_path = utilities.get_pdf_path(pdf_output_dir, profile_name, invoice_number)
 
     file_io.excel_to_pdf(instance_path, pdf_path)
+    print(f"PDF file created: {pdf_path}")
 
     cache_data["pdf_path"] = str(pdf_path)
     file_io.create_session_cache(cache_data)
@@ -207,8 +208,9 @@ def send(args):
     print("=== Email ===")
 
     # email
-    print(recipient.email)
+    print(f"To: {recipient.email}")
 
+    print("=== Text Content ===")
     # subject
     subject_raw = recipient.subject
     # parse subject
@@ -225,14 +227,6 @@ def send(args):
     body = parser.replace_keys(keys, (r"{{", r"}}"))
     print(body)
 
-    # read config
-    config = file_io.read_json(path_info.config)["smtp"]
-    smtp_host = config["host"]
-    smtp_port = config["port"]
-
-    email, password = credentials.decrypt_from_json()
-
-    server = smtp.Smtp(smtp_host, smtp_port, email, password)
     print("=== Attachment ===")
     print(cache_data["pdf_path"])
 
@@ -241,6 +235,14 @@ def send(args):
     if user_input.lower() != "y":
         print("Aborted.")
         return
+
+    # read config
+    config = file_io.read_json(path_info.config)["smtp"]
+    smtp_host = config["host"]
+    smtp_port = config["port"]
+
+    email, password = credentials.decrypt_from_json()
+    server = smtp.Smtp(smtp_host, smtp_port, email, password)
 
     # validate email
     if not args.skip:

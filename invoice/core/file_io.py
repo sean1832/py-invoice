@@ -134,7 +134,6 @@ def excel_to_pdf(excel_path, pdf_path):
 
     # create directory if not exists
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
-    print(f"Converting {excel_path} to {pdf_path}")
 
     excel = None
     wb = None
