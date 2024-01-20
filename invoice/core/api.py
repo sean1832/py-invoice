@@ -4,7 +4,7 @@ from invoice.core import utilities as utils
 from invoice.core.excel_worker import Excel_worker
 from invoice.core.profile import Profile
 
-from . import credentials, dummy, smtp
+from . import credentials, dummy, smtp  # noqa: F401
 
 
 def write_datas(
