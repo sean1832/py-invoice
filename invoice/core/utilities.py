@@ -1,15 +1,12 @@
 import os
 import pathlib
 import re
-import shutil
-import subprocess
-import sys
 from datetime import datetime
 from types import NotImplementedType
 from typing import Tuple
 
 from . import file_io as io
-from .profile import Profile
+from .profile import Client, Profile, Provider
 
 
 def is_numeric(value):
@@ -19,29 +16,11 @@ def is_numeric(value):
     except ValueError:
         return False
 
-def open_directory(path):
-    # Check if the path is a valid directory
-    if not os.path.isdir(path):
-        print(f"The path {path} is not a valid directory.")
-        return
-
-    # check if vscode is installed
-    if shutil.which("code"):
-        full_path = pathlib.Path(path).resolve()
-        print(f"Opening directory in vscode {full_path}")
-        subprocess.run(["code", full_path], shell=True)
-        return
-    # Open the directory based on the operating system
-    if sys.platform == 'win32':
-        subprocess.run(['explorer', path])
-    elif sys.platform == 'darwin':  # macOS
-        subprocess.run(['open', path])
-    else:  # Linux and other Unix-like OS
-        subprocess.run(['xdg-open', path])
 
 def concat_pos(column, row):
     """concat position"""
     return column + str(row)
+
 
 def print_dataframe_in_grid(df, max_width=100):
     """Prints the DataFrame in a grid format in the terminal."""
@@ -62,20 +41,29 @@ def print_dataframe_in_grid(df, max_width=100):
     total_width = sum(col_max_widths)
 
     # Scale column widths based on available width
-    col_widths = [int((width / total_width) * available_width) for width in col_max_widths]
+    col_widths = [
+        int((width / total_width) * available_width) for width in col_max_widths
+    ]
 
     # Print the horizontal line
     def print_horizontal_line():
-        line = '+'
+        line = "+"
         for width in col_widths:
-            line += '-' * (width + 2) + '+'
+            line += "-" * (width + 2) + "+"
         print(line)
 
     print_horizontal_line()
 
     # Print each row with vertical separators
     for _, row in df.iterrows():
-        row_str = '| ' + ' | '.join(f'{str(row[col])[:col_widths[i]].ljust(col_widths[i])}' for i, col in enumerate(df.columns)) + ' |'
+        row_str = (
+            "| "
+            + " | ".join(
+                f"{str(row[col])[:col_widths[i]].ljust(col_widths[i])}"
+                for i, col in enumerate(df.columns)
+            )
+            + " |"
+        )
         print(row_str)
         print_horizontal_line()
 
@@ -152,19 +140,18 @@ def replace_keys(string: str, keys: list[str], seperator: Tuple[str, str]) -> st
 def get_pdf_path(root, profile_name, invoice_number):
     """get pdf name"""
     # pdf file path
-    profile_obj = Profile()
-    profile = profile_obj.get_profile_by_name(profile_name)
-    provider = profile_obj.get_provider_by_name(profile["provider"])
-    privider_name_dict = io.search_json_by_key_value(provider["datas"], "label", "name")
-    if privider_name_dict is not None:
-        privider_name = privider_name_dict["value"]
+    profile = Profile(profile_name)
+    provider = Provider(profile)
+    provider_dataitem = provider.querry_data_label("name")
+    if provider_dataitem is not None:
+        privider_name = provider_dataitem.value
     else:
         raise ValueError("Provider name not found")
 
-    client = profile_obj.get_client_by_name(profile["client"])
-    client_name_dict = io.search_json_by_key_value(client["datas"], "label", "name")
-    if client_name_dict is not None:
-        client_name = client_name_dict["value"]
+    client = Client(profile)
+    client_dataitem = client.querry_data_label("name")
+    if client_dataitem is not None:
+        client_name = client_dataitem.value
     else:
         raise ValueError("Client name not found")
 

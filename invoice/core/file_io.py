@@ -1,5 +1,9 @@
 import json
+import os
 import pathlib
+import shutil
+import subprocess
+import sys
 import traceback
 
 import win32api
@@ -37,6 +41,40 @@ def search_json_list_by_key_value(json, key, value):
             if item[key] == value:
                 result.append(item)
     return result
+
+def open_directory(path):
+    # Check if the path is a valid directory
+    if not os.path.isdir(path):
+        print(f"The path {path} is not a valid directory.")
+        return
+
+    # check if vscode is installed
+    if shutil.which("code"):
+        full_path = pathlib.Path(path).resolve()
+        print(f"Opening directory in vscode {full_path}")
+        subprocess.run(["code", full_path], shell=True)
+        return
+    # Open the directory based on the operating system
+    if sys.platform == 'win32':
+        subprocess.run(['explorer', path])
+    elif sys.platform == 'darwin':  # macOS
+        subprocess.run(['open', path])
+    else:  # Linux and other Unix-like OS
+        subprocess.run(['xdg-open', path])
+
+def open_file(path):
+    # Check if the path is a valid file
+    if not os.path.isfile(path):
+        print(f"The path {path} is not a valid file.")
+        return
+    
+    # Open the file based on the operating system
+    if sys.platform == 'win32':
+        subprocess.run(['start', path], shell=True)
+    elif sys.platform == 'darwin':  # macOS
+        subprocess.run(['open', path])
+    else:  # Linux and other Unix-like OS
+        subprocess.run(['xdg-open', path])
 
 
 def read_bytes(path: pathlib.Path | str):

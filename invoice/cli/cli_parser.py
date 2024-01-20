@@ -73,18 +73,16 @@ def build_parser():
     # Create one subparser for the show command
     show_subparsers = parser_show.add_subparsers(help="Show subcommands", dest="type")
 
-    # show templates
-    parser_show_template = show_subparsers.add_parser("template", help="Show templates")
-    parser_show_template.set_defaults(func=commands.show_templates)
-
     # show profiles
     parser_show_profiles = show_subparsers.add_parser("profiles", help="Show profiles")
-    parser_show_profiles.add_argument("profile_type", type=str, help="Profile type (client, provider)", choices=["client", "provider"],)
     parser_show_profiles.set_defaults(func=commands.show_profiles)
 
     # show invoice
-    parser_show_invoice = show_subparsers.add_parser("invoice", help="Show invoice")
-    parser_show_invoice.add_argument("invoice_number", type=str, help='Invoice number, or "today" to show today\'s invoice',)
+    parser_show_invoice = show_subparsers.add_parser("invoice", help="Show invoice (default 'today')")
+    parser_show_invoice.add_argument("-n", "--invoice_number", type=str, help='Invoice number')
+    parser_show_invoice.add_argument("-o", "--open", action="store_true", help="Open invoice in excel")
+    parser_show_invoice.add_argument("--pdf", action="store_true", help="Open invoice output in pdf viewer")
+    parser_show_invoice.add_argument("--dir", action="store_true", help="Open invoice output directory")
     parser_show_invoice.set_defaults(func=commands.show_invoice)
 
     # show config

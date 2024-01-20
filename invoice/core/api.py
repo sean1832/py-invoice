@@ -2,7 +2,7 @@ from typing import Tuple
 
 from invoice.core import utilities as utils
 from invoice.core.excel_worker import ExcelWorker
-from invoice.core.profile import Profile
+from invoice.core.profile import Client, Profile, Provider
 
 from . import credentials, dummy, smtp  # noqa: F401
 
@@ -69,20 +69,17 @@ def write_datas(
     worker.write_cell(invoice_date[0], invoice_date[1])
 
     # write client info
-    profile_obj = Profile()
-    profile = profile_obj.get_profile_by_name(profile_name)
-    client = profile_obj.get_client_by_name(profile["client"])
-    client_datas = client["datas"]
-    for data in client_datas:
-        if not data["location"] == "" or not data["value"] == "":
-            worker.write_cell(data["location"], data["value"], data["type"])
+    profile = Profile(profile_name)
+    client = Client(profile)
+    for data in client.datas:
+        if not data.location == "" or not data.value == "":
+            worker.write_cell(data.location, data.value, data.type)
 
     # write provider info
-    provider = profile_obj.get_provider_by_name(profile["provider"])
-    provider_datas = provider["datas"]
-    for data in provider_datas:
-        if not data["location"] == "" or not data["value"] == "":
-            worker.write_cell(data["location"], data["value"], data["type"])
+    provider = Provider(profile)
+    for data in provider.datas:
+        if not data.location == "" or not data.value == "":
+            worker.write_cell(data.location, data.value, data.type)
     return worker.read_range("a17", "f22")
 
 def login(smtp_host, smtp_port, email, password):
