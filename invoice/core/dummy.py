@@ -1,4 +1,5 @@
-from . import config_manager, file_io
+from . import file_io
+from .config import path_info
 
 
 def create_clients():
@@ -46,7 +47,7 @@ def create_clients():
             ]
         }
     ]
-    path = config_manager.PathManager().clients
+    path = path_info.clients
     file_io.write_json(path, data)
 
 def create_default_params():
@@ -91,7 +92,7 @@ def create_default_params():
             }
         }
     ]
-    path = config_manager.PathManager().default_params
+    path = path_info.default_params
     file_io.write_json(path, data)
 
 def create_profiles():
@@ -105,7 +106,7 @@ def create_profiles():
             "recipient": "pm"
         }
     ]
-    path = config_manager.PathManager().profiles
+    path = path_info.profiles
     file_io.write_json(path, data)
 
 def create_providers():
@@ -177,7 +178,7 @@ def create_providers():
             ]
         }
     ]
-    path = config_manager.PathManager().providers
+    path = path_info.providers
     file_io.write_json(path, data)
 
 def create_recipients():
@@ -191,7 +192,7 @@ def create_recipients():
             "body": "Please find attached the invoice for the services rendered. \n\nRegards\n{{providers.0.name}}"
         }
     ]
-    path = config_manager.PathManager().recipients
+    path = path_info.recipients
     file_io.write_json(path, data)
 
 def create_dummy():

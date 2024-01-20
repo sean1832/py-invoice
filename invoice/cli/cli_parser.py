@@ -1,12 +1,12 @@
 import argparse
 
 from invoice.cli import cli_commands as commands
-from invoice.core.config_manager import MetadataManager
+from invoice.core.config import project_meta
 
 
 def build_parser():
     """Build parser"""
-    meta = MetadataManager()
+    meta = project_meta
     parser = argparse.ArgumentParser(description=f"Invoice generator v{meta.version}")
     subparsers = parser.add_subparsers(help="commands")
 

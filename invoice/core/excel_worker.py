@@ -4,11 +4,12 @@ from typing import Any
 
 import openpyxl
 
-from invoice.core import config_manager, file_io
-from invoice.core import utilities as utils
+from . import file_io
+from . import utilities as utils
+from .config import path_info
 
 
-class Excel_worker:
+class ExcelWorker:
     def __init__(self, path: str | None = None, sheet: int | None = None):
         # Check if either both parameters are provided or neither is provided
         if (path is None) != (sheet is None):
@@ -18,7 +19,6 @@ class Excel_worker:
         self.sheet = sheet
 
         # private variables
-        path_info = config_manager.PathManager()
         self._instant_path = path_info.instance
 
     def write_cell(self, cell: str, value: Any, value_type: str = "string"):

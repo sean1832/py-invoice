@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from invoice.core import utilities as utils
-from invoice.core.excel_worker import Excel_worker
+from invoice.core.excel_worker import ExcelWorker
 from invoice.core.profile import Profile
 
 from . import credentials, dummy, smtp  # noqa: F401
@@ -23,7 +23,7 @@ def write_datas(
     silent: bool,
 ):
     """Create invoice"""
-    worker = Excel_worker(template_path, 0)
+    worker = ExcelWorker(template_path, 0)
 
     if append:
         if not worker.is_instantiated():
@@ -99,7 +99,7 @@ def login(smtp_host, smtp_port, email, password):
 
 def remove_row(row_index: int, start_row: int, template_path: str):
     """remove a row from an invoice"""
-    worker = Excel_worker(template_path, 0)
+    worker = ExcelWorker(template_path, 0)
     worker.remove_row(row_index, start_row, row_range=5)
 
 def clean_up():
@@ -108,5 +108,5 @@ def clean_up():
     # file_io.delete_session_cache()
 
     # delete instance file
-    Excel_worker().clean_up()
+    ExcelWorker().clean_up()
 

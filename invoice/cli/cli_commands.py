@@ -2,16 +2,16 @@ import pathlib
 from datetime import datetime
 from pathlib import Path
 
-from invoice.core import api, config_manager, credentials, file_io, smtp, utilities
+from invoice.core import api, credentials, file_io, smtp, utilities
+from invoice.core.config import path_info
 from invoice.core.profile import Profile
 
 from . import cli_prompt
 
-PATH_INFO = config_manager.PathManager()
 
 def write(args):
     """Create invoice"""
-    if not PATH_INFO.check_profiles_path():
+    if not path_info.check_profiles_path():
         print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
         return
     profile_name = args.profile_name
@@ -81,7 +81,7 @@ def write(args):
     # template_path
     template_path = args.template_path
     if template_path is None:
-        template_path = PATH_INFO.template
+        template_path = path_info.template
     else:
         if not Path(template_path).exists() or not Path(template_path).is_file():
             raise FileNotFoundError(f"Template file not found: {template_path}")
@@ -133,7 +133,7 @@ def write(args):
 
 def remove(args):
     """remove a row from an invoice"""
-    if not PATH_INFO.check_profiles_path():
+    if not path_info.check_profiles_path():
         print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
         return
     # read session cache
@@ -142,14 +142,14 @@ def remove(args):
     profile_obj = Profile()
     profile = profile_obj.get_profile_by_name(cache_data["profile_name"])
     param = profile_obj.get_default_param_by_name(profile["params"])
-    template_path = PATH_INFO.template
+    template_path = path_info.template
     start_row = param["iteration"]["start_row"]
     api.remove_row(args.row_index, start_row, template_path)
 
 
 def export(args):
     """export an invoice to pdf"""
-    if not PATH_INFO.check_profiles_path():
+    if not path_info.check_profiles_path():
         print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
         return 
     # read session cache
@@ -158,7 +158,6 @@ def export(args):
     invoice_number = cache_data["invoice_number"]
 
     # excel file path
-    path_info = config_manager.PathManager()
     instance_path = path_info.instance
 
     # output dir for pdf
@@ -175,10 +174,10 @@ def export(args):
 
 def send(args):
     """Send an invoice"""
-    if not PATH_INFO.check_profiles_path():
+    if not path_info.check_profiles_path():
         print("Profiles path not found. Please run 'invoice init' to create profiles. \nNote: that you may have to manually edit the contents.")
         return
-    if not PATH_INFO.check_credential_path():
+    if not path_info.check_credential_path():
         print("Credentials path not found. Please run 'invoice login' to set up credentials")
         return
 
@@ -209,7 +208,7 @@ def send(args):
     print(body)
 
     # read config
-    config = file_io.read_json(PATH_INFO.config)["smtp"]
+    config = file_io.read_json(path_info.config)["smtp"]
     smtp_host = config["host"]
     smtp_port = config["port"]
 
@@ -248,7 +247,7 @@ def send(args):
 
 def login(args):
     """Set up credentials"""
-    config = file_io.read_json(PATH_INFO.config)["smtp"]
+    config = file_io.read_json(path_info.config)["smtp"]
     smtp_host = config["host"]
     smtp_port = config["port"]
 
@@ -263,7 +262,7 @@ def login(args):
 
 def init(args):
     """Create dummy data"""
-    if PATH_INFO.check_profiles_path():
+    if path_info.check_profiles_path():
         asw = input("Profiles path already exists. Do you want to overwrite it? (y/n)")
         if asw == "n":
             print("Aborted.")
@@ -274,8 +273,8 @@ def init(args):
 
     # login
     
-    config = file_io.read_json(PATH_INFO.config)["smtp"]
-    profile_root = pathlib.Path(PATH_INFO.profiles).parent
+    config = file_io.read_json(path_info.config)["smtp"]
+    profile_root = pathlib.Path(path_info.profiles).parent
     smtp_host = config["host"]
     smtp_port = config["port"]
 
