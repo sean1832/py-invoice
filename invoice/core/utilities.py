@@ -1,11 +1,7 @@
 import os
 import pathlib
-import re
 from datetime import datetime
-from types import NotImplementedType
-from typing import Tuple
 
-from . import file_io as io
 from .profile import Client, Profile, Provider
 
 
@@ -66,75 +62,6 @@ def print_dataframe_in_grid(df, max_width=100):
         )
         print(row_str)
         print_horizontal_line()
-
-
-def parse_keys(string, reg_pattern) -> list:
-    r"""
-    This function takes in a string and a regular expression pattern and returns a list of all matches found in the string.
-
-    Parameters:
-    - string (str): The input string to be parsed.
-    - reg_pattern (str): The regular expression pattern to be used for matching.
-
-    Returns:
-    - matches (list): A list of all matches found in the string.
-
-    Example:
-    >>> parse_keys("Hello, World!", r"[A-Za-z]+")
-    ['Hello', 'World']
-    >>> parse_keys("Invoice {{provider.name}}-{{yymmdd}}", r"\{\{(.*?)\}\}")
-    ['provider.name', 'yymmdd']
-    """
-
-    pattern = re.compile(reg_pattern)
-    matches = pattern.findall(string)
-    return matches
-
-
-def categorize_key(string):
-    # something.something
-    if re.match(r"([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)+)", string):
-        return "json_path"
-    if re.match(r"^[ymd]+$", string):
-        return "date"
-    else:
-        raise NotImplementedType(f"Variable type not implemented: {string}")
-
-
-def key_get_json_val(root, raw_key, is_list=False):
-    keys = raw_key.split(".")
-    if len(keys) < 1:
-        raise ValueError(f"Invalid keys: {keys}")
-
-    json_file = pathlib.Path(root, f"{keys[0]}.json")
-    json_data = io.read_json(json_file)
-    json_entry = json_data[int(keys[1])]
-    for key in keys[2:]:
-        if isinstance(json_entry, list):
-            json_entry = json_entry[0]
-        json_entry = json_entry[key]
-
-    # Flatten the list if it contains only one element
-    if isinstance(json_entry, list) and len(json_entry) == 1:
-        return json_entry[0]
-    return json_entry
-
-
-def replace_keys(string: str, keys: list[str], seperator: Tuple[str, str]) -> str:
-    result = string
-    for key in keys:
-        var_type = categorize_key(key)
-        if var_type == "json_path":
-            value = key_get_json_val("invoice/data/profiles", key)
-            wrapped_key = f"{seperator[0]}{key}{seperator[1]}"
-            if isinstance(value, list):
-                raise ValueError(f"value is a list: {value}")
-            result = result.replace(wrapped_key, value)
-        if var_type == "date":
-            value = convert_date(datetime.now(), key)
-            wrapped_key = f"{seperator[0]}{key}{seperator[1]}"
-            result = result.replace(wrapped_key, value)
-    return result
 
 
 def get_pdf_path(root, profile_name, invoice_number):

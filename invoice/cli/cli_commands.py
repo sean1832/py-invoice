@@ -2,7 +2,7 @@ import pathlib
 from datetime import datetime
 from pathlib import Path
 
-from invoice.core import api, credentials, file_io, smtp, utilities
+from invoice.core import api, credentials, file_io, key_parser, smtp, utilities
 from invoice.core.config import path_info
 from invoice.core.profile import DefaultParam, Profile, Recipient
 
@@ -73,11 +73,13 @@ def write(args):
     invoice_number_loc = param.invoice_number.location
     invoice_number_val = args.invoice_number
     if invoice_number_val is None:
-        invoice_num_format = param.invoice_number.value
-        invoice_number = (
-            invoice_number_loc,
-            utilities.convert_date(datetime.now(), invoice_num_format),
-        )
+        invoice_num_raw = param.invoice_number.value
+        if invoice_num_raw is None:
+            raise ValueError("Invoice number value not found")
+        parser = key_parser.KeyParser(invoice_num_raw, r"\{\{(.*?)\}\}", profile_name)
+        keys = parser.parse()
+        invoice_number_val = parser.replace_keys(keys, (r"{{", r"}}"))
+        invoice_number = (invoice_number_loc, invoice_number_val)
     else:
         invoice_number = (invoice_number_loc, invoice_number_val)
 
@@ -210,15 +212,17 @@ def send(args):
     # subject
     subject_raw = recipient.subject
     # parse subject
-    subject_keys = utilities.parse_keys(subject_raw, r"\{\{(.*?)\}\}")
-    subject = utilities.replace_keys(subject_raw, subject_keys, (r"{{", r"}}"))
+    parser = key_parser.KeyParser(subject_raw, r"\{\{(.*?)\}\}", profile_name)
+    keys = parser.parse()
+    subject = parser.replace_keys(keys, (r"{{", r"}}"))
     print(subject)
 
     # body
     body = recipient.body
     # parse body
-    body_keys = utilities.parse_keys(body, r"\{\{(.*?)\}\}")
-    body = utilities.replace_keys(body, body_keys, (r"{{", r"}}"))
+    parser = key_parser.KeyParser(body, r"\{\{(.*?)\}\}", profile_name)
+    keys = parser.parse()
+    body = parser.replace_keys(keys, (r"{{", r"}}"))
     print(body)
 
     # read config
