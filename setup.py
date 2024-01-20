@@ -20,6 +20,7 @@ setup(
         "openpyxl",
         "pywin32",
         "cryptography",
+        "pandas",
     ],
     entry_points={"console_scripts": ["invoice = invoice.cli.cli_main:main"]},
 )

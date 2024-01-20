@@ -3,6 +3,8 @@ import traceback
 from typing import Any
 
 import openpyxl
+import openpyxl.utils.cell
+import pandas as pd
 
 from . import file_io
 from . import utilities as utils
@@ -89,6 +91,39 @@ class ExcelWorker:
             traceback.print_exc()
             return None
 
+    def read_range(self, start_cell: str, end_cell: str):
+        """read range of excel file using pandas"""
+        try:
+            # convert start and end cell to coordinates
+            start_row, start_col = openpyxl.utils.cell.coordinate_to_tuple(start_cell)
+            end_row, end_col = openpyxl.utils.cell.coordinate_to_tuple(end_cell)
+            
+            # generate column letter for usecols
+            start_col_letter = openpyxl.utils.cell.get_column_letter(start_col)
+            end_col_letter = openpyxl.utils.cell.get_column_letter(end_col)
+
+            # calculate number of rows and columns to read
+            nrows = end_row - start_row + 1
+
+            # Read the specified range
+            df = pd.read_excel(
+                self._instant_path,
+                sheet_name=self.sheet,
+                header=None,
+                usecols=f"{start_col_letter}:{end_col_letter}",
+                skiprows=start_row - 1,  # 0-indexed, unlike Excel
+                nrows=nrows,
+                engine="openpyxl"
+            )
+            # Replace NaN values with empty string
+            df.fillna('', inplace=True) # type: ignore
+
+            return df
+        except Exception as e:
+            print(f"Error reading excel: {e}")
+            traceback.print_exc()
+            return None
+
     def get_last_data_row(self, column: str, start_row: int, row_range: int):
         """get last data row"""
         try:
@@ -165,13 +200,12 @@ class ExcelWorker:
             if row_to_remove < start_row or row_to_remove > start_row + row_range:
                 raise ValueError("Row index out of range!")
             for cell in sheet[row_to_remove]:
-                print(cell.coordinate, cell.value)
                 cell.value = None  # remove cell value
 
             wb.save(wb_path)
         except Exception as e:
-            print(f"Error removing row: {e}")
             traceback.print_exc()
+            raise e
 
     def instantiate(self):
         """instantiate excel file"""

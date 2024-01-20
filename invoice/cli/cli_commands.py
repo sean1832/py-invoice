@@ -97,7 +97,7 @@ def write(args):
     append_row = args.append
     silent = args.silent
 
-    api.write_datas(
+    df = api.write_datas(
         profile_name,
         iteration_start_row,
         date,
@@ -112,7 +112,7 @@ def write(args):
         append_row,
         silent,
     )
-    print("Invoice created successfully!")
+    utilities.print_dataframe_in_grid(df, 70)
 
     # write to cache
     cache_data = {
@@ -144,7 +144,8 @@ def remove(args):
     param = profile_obj.get_default_param_by_name(profile["params"])
     template_path = path_info.template
     start_row = param["iteration"]["start_row"]
-    api.remove_row(args.row_index, start_row, template_path)
+    df = api.remove_row(args.row_index, start_row, template_path)
+    utilities.print_dataframe_in_grid(df, 70)
 
 
 def export(args):

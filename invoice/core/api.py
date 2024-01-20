@@ -34,7 +34,6 @@ def write_datas(
             return
         else:
             row += 1
-        print(f"Appending data to row {row}")
     else:
         row = iteration_start_row
         worker.instantiate()
@@ -84,6 +83,7 @@ def write_datas(
     for data in provider_datas:
         if not data["location"] == "" or not data["value"] == "":
             worker.write_cell(data["location"], data["value"], data["type"])
+    return worker.read_range("a17", "f22")
 
 def login(smtp_host, smtp_port, email, password):
     server = smtp.Smtp(
@@ -100,7 +100,11 @@ def login(smtp_host, smtp_port, email, password):
 def remove_row(row_index: int, start_row: int, template_path: str):
     """remove a row from an invoice"""
     worker = ExcelWorker(template_path, 0)
-    worker.remove_row(row_index, start_row, row_range=5)
+    try:
+        worker.remove_row(row_index, start_row, row_range=5)
+    except Exception:
+        return None
+    return worker.read_range("a17", "f22")
 
 def clean_up():
     """Clean up"""

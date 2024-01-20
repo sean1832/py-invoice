@@ -8,6 +8,8 @@ from datetime import datetime
 from types import NotImplementedType
 from typing import Tuple
 
+import pandas as pd
+
 from . import file_io as io
 from .profile import Profile
 
@@ -42,6 +44,42 @@ def open_directory(path):
 def concat_pos(column, row):
     """concat position"""
     return column + str(row)
+
+def print_dataframe_in_grid(df, max_width=100):
+    """Prints the DataFrame in a grid format in the terminal."""
+    if df is None:
+        return
+    # Get terminal width and adjust with scaling factor
+    terminal_width = os.get_terminal_size().columns
+    adjusted_width = int(terminal_width * (max_width / 100))
+
+    # Calculate total width used for separators
+    total_separator_width = 3 * len(df.columns) + 1
+
+    # Calculate available width for data
+    available_width = adjusted_width - total_separator_width
+
+    # Find the maximum width of each column and sum
+    col_max_widths = [df[col].astype(str).map(len).max() for col in df.columns]
+    total_width = sum(col_max_widths)
+
+    # Scale column widths based on available width
+    col_widths = [int((width / total_width) * available_width) for width in col_max_widths]
+
+    # Print the horizontal line
+    def print_horizontal_line():
+        line = '+'
+        for width in col_widths:
+            line += '-' * (width + 2) + '+'
+        print(line)
+
+    print_horizontal_line()
+
+    # Print each row with vertical separators
+    for _, row in df.iterrows():
+        row_str = '| ' + ' | '.join(f'{str(row[col])[:col_widths[i]].ljust(col_widths[i])}' for i, col in enumerate(df.columns)) + ' |'
+        print(row_str)
+        print_horizontal_line()
 
 
 def parse_keys(string, reg_pattern) -> list:
