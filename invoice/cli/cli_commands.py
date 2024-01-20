@@ -2,12 +2,12 @@ import pathlib
 from datetime import datetime
 from pathlib import Path
 
-from invoice.core import api, credentials, file_io, info, smtp, utilities
+from invoice.core import api, config_manager, credentials, file_io, smtp, utilities
 from invoice.core.profile import Profile
 
 from . import cli_prompt
 
-PATH_INFO = info.PathInfo()
+PATH_INFO = config_manager.PathManager()
 
 def write(args):
     """Create invoice"""
@@ -158,7 +158,7 @@ def export(args):
     invoice_number = cache_data["invoice_number"]
 
     # excel file path
-    path_info = info.PathInfo()
+    path_info = config_manager.PathManager()
     instance_path = path_info.instance
 
     # output dir for pdf

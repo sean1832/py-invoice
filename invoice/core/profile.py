@@ -1,10 +1,10 @@
-from invoice.core import info
+from invoice.core import config_manager
 from invoice.core.file_io import read_json, search_json_by_key_value
 
 
 class Profile:
     def __init__(self):
-        self._info = info.PathInfo()
+        self._info = config_manager.PathManager()
         self.profile = None
 
     def get_profile_by_name(self, profile_name: str):

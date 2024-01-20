@@ -5,7 +5,7 @@ from invoice.core import file_io
 METADATA_PATH = 'invoice/metadata.json'
 CONFIG_PATH = 'invoice/data/config.json'
 
-class MetaInfo:
+class MetadataManager:
     def __init__(self):
         metadata = file_io.read_json(METADATA_PATH)
         self.name = metadata['name']
@@ -15,7 +15,7 @@ class MetaInfo:
         self.url = metadata['url']
         self.license = metadata['license']
 
-class PathInfo:
+class PathManager:
     def __init__(self):
         self.config = CONFIG_PATH
 

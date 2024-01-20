@@ -1,13 +1,13 @@
 from invoice.cli import cli_parser
-from invoice.core import info
+from invoice.core import config_manager
 
 
 def main():
     parser = cli_parser.build_parser()
     args = parser.parse_args()
 
-    meta = info.MetaInfo()
-    path_info = info.PathInfo()
+    meta = config_manager.MetadataManager()
+    path_info = config_manager.PathManager()
 
     # check if core path exists
     if not path_info.check_core_path():

@@ -3,7 +3,7 @@ from typing import Any
 
 from cryptography.fernet import Fernet
 
-from . import file_io, info
+from . import config_manager, file_io
 
 
 def encrypt_value(value: Any, key: bytes) -> str:
@@ -18,21 +18,21 @@ def decrypt_value(value: str, key: bytes) -> str:
 
 def read_key() -> bytes:
     """Read key"""
-    path_info = info.PathInfo()
+    path_info = config_manager.PathManager()
     if not pathlib.Path(path_info.key).exists():
         raise FileNotFoundError("Key file not found")
     return file_io.read_bytes(path_info.key)
 
 def read_credentials() -> dict[str, str]:
     """Read credentials"""
-    path_info = info.PathInfo()
+    path_info = config_manager.PathManager()
     if not pathlib.Path(path_info.credentials).exists():
         raise FileNotFoundError("Credentials file not found")
     return file_io.read_json(path_info.credentials)
 
 def encrypt_to_json(email: str, password: str, hidden: bool = False):
     """Encrypt email and password to json"""
-    path_info = info.PathInfo()
+    path_info = config_manager.PathManager()
     
     # generate key
     key = Fernet.generate_key()

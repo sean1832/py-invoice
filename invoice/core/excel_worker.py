@@ -4,7 +4,7 @@ from typing import Any
 
 import openpyxl
 
-from invoice.core import file_io, info
+from invoice.core import config_manager, file_io
 from invoice.core import utilities as utils
 
 
@@ -18,7 +18,7 @@ class Excel_worker:
         self.sheet = sheet
 
         # private variables
-        path_info = info.PathInfo()
+        path_info = config_manager.PathManager()
         self._instant_path = path_info.instance
 
     def write_cell(self, cell: str, value: Any, value_type: str = "string"):
