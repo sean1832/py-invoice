@@ -7,6 +7,7 @@ from invoice.core.config import path_info
 from invoice.core.profile import DefaultParam, Profile, Recipient
 
 from . import cli_prompt
+from .cli_spinner import Spinner
 
 
 def write(args):
@@ -107,6 +108,7 @@ def write(args):
     append_row = args.append
     silent = args.silent
 
+    # write to excel
     df = api.write_datas(
         profile_name,
         iteration_start_row,
@@ -180,7 +182,9 @@ def export(args):
     # pdf file path
     pdf_path = utilities.get_pdf_path(pdf_output_dir, profile_name, invoice_number)
 
-    file_io.excel_to_pdf(instance_path, pdf_path)
+    # convert to pdf
+    with Spinner():
+        file_io.excel_to_pdf(instance_path, pdf_path)
     print(f"PDF file created: {pdf_path}")
 
     cache_data["pdf_path"] = str(pdf_path)
@@ -247,7 +251,8 @@ def send(args):
     # validate email
     if not args.skip:
         print("=== Login ===")
-        is_valid, error = server.validate()
+        with Spinner():
+            is_valid, error = server.validate()
         if not is_valid:
             print(
                 f"Login failed. Please run 'invoice login' to set up credentials.\n{error}"
@@ -257,7 +262,8 @@ def send(args):
             print("Login successful!")
 
     print("=== Sending email ===")
-    server.send_email(recipient.email, subject, body, cache_data["pdf_path"])
+    with Spinner():
+        server.send_email(recipient.email, subject, body, cache_data["pdf_path"])
     print("Email sent successfully!")
 
     print("=== Clean up ===")
@@ -274,7 +280,8 @@ def login(args):
 
     while True:
         email, password = cli_prompt.login_prompt(args.show)
-        result, error = api.login(smtp_host, smtp_port, email, password)
+        with Spinner():
+            result, error = api.login(smtp_host, smtp_port, email, password)
         if result:
             print("Login successful!")
             break
@@ -302,7 +309,8 @@ def init(args):
 
     while True:
         email, password = cli_prompt.login_prompt(args.show)
-        result, error = api.login(smtp_host, smtp_port, email, password)
+        with Spinner():
+            result, error = api.login(smtp_host, smtp_port, email, password)
         if result:
             print("Login successful!")
             break
