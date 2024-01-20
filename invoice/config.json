@@ -1,0 +1,20 @@
+{
+    "path":{
+        "template": "template.xlsx",
+        "instance": "instance.xlsx",
+        "credentials": ".credentials",
+        "key": ".key",
+        "output_dir": "output/",
+        "profiles_path":{
+            "clients": "profiles/clients.json",
+            "default_params": "profiles/default_params.json",
+            "profiles": "profiles/profiles.json",
+            "providers": "profiles/providers.json",
+            "recipients": "profiles/recipients.json"
+        }
+    },
+    "smtp":{
+        "host": "smtp.gmail.com",
+        "port": 465
+    }
+}

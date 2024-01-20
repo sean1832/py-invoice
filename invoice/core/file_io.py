@@ -9,9 +9,12 @@ import traceback
 import win32api
 import win32com.client
 
+from invoice.core.config_manager import APPDATA_ROOT
+
 
 def read_json(path):
     return json.load(open(path, "r"))
+
 
 def write_json(path: str | pathlib.Path, content):
     # create directory if not exists
@@ -19,11 +22,14 @@ def write_json(path: str | pathlib.Path, content):
     path.parent.mkdir(parents=True, exist_ok=True)
 
     json.dump(content, open(path, "w"), indent=4)
+
+
 def search_json_by_key_value(json, key, value):
     for item in json:
         if item[key] == value:
             return item
     return None
+
 
 def delete_file(path):
     """delete file"""
@@ -33,6 +39,7 @@ def delete_file(path):
         print(f"Error deleting file: {e}")
         traceback.print_exc()
 
+
 def search_json_list_by_key_value(json, key, value):
     result = []
     for item in json:
@@ -41,6 +48,7 @@ def search_json_list_by_key_value(json, key, value):
             if item[key] == value:
                 result.append(item)
     return result
+
 
 def open_directory(path):
     # Check if the path is a valid directory
@@ -55,26 +63,36 @@ def open_directory(path):
         subprocess.run(["code", full_path], shell=True)
         return
     # Open the directory based on the operating system
-    if sys.platform == 'win32':
-        subprocess.run(['explorer', path])
-    elif sys.platform == 'darwin':  # macOS
-        subprocess.run(['open', path])
+    if sys.platform == "win32":
+        subprocess.run(["explorer", path])
+    elif sys.platform == "darwin":  # macOS
+        subprocess.run(["open", path])
     else:  # Linux and other Unix-like OS
-        subprocess.run(['xdg-open', path])
+        subprocess.run(["xdg-open", path])
+
 
 def open_file(path):
     # Check if the path is a valid file
     if not os.path.isfile(path):
         print(f"The path {path} is not a valid file.")
         return
-    
+
     # Open the file based on the operating system
-    if sys.platform == 'win32':
-        subprocess.run(['start', path], shell=True)
-    elif sys.platform == 'darwin':  # macOS
-        subprocess.run(['open', path])
+    if sys.platform == "win32":
+        subprocess.run(["start", path], shell=True)
+    elif sys.platform == "darwin":  # macOS
+        subprocess.run(["open", path])
     else:  # Linux and other Unix-like OS
-        subprocess.run(['xdg-open', path])
+        subprocess.run(["xdg-open", path])
+
+
+def get_appdata_path(local=False):
+    """Get appdata path"""
+    env_var = "LOCALAPPDATA" if local else "APPDATA"
+    appdata_path = os.getenv(env_var)
+    if appdata_path is None:
+        raise Exception(f"Environment variable {env_var} not found!")
+    return appdata_path
 
 
 def read_bytes(path: pathlib.Path | str):
@@ -82,13 +100,15 @@ def read_bytes(path: pathlib.Path | str):
         content = f.read()
     return content
 
+
 def write_bytes(path: pathlib.Path | str, content: bytes):
     with open(path, "wb") as f:
         f.write(content)
 
+
 def create_session_cache(content: dict):
     """Create session cache"""
-    cache_path = pathlib.Path("invoice/data/session_cache.temp")
+    cache_path = os.path.join(APPDATA_ROOT, "session_cache.temp")
     # write as json
     with open(cache_path, "w") as f:
         json.dump(content, f)
@@ -96,7 +116,7 @@ def create_session_cache(content: dict):
 
 def read_session_cache():
     """Read session cache"""
-    cache_path = pathlib.Path("invoice/data/session_cache.temp")
+    cache_path = os.path.join(APPDATA_ROOT, "session_cache.temp")
     # read as json
     with open(cache_path, "r") as f:
         content = json.load(f)
@@ -105,7 +125,7 @@ def read_session_cache():
 
 def delete_session_cache():
     """Delete session cache"""
-    cache_path = pathlib.Path("invoice/data/session_cache.temp")
+    cache_path = pathlib.Path(os.path.join(APPDATA_ROOT, "session_cache.temp"))
     cache_path.unlink()
 
 

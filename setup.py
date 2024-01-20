@@ -13,8 +13,11 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        "metadata": ["invoice/metadata.json"],
-        "data": ["invoice/data/*"],
+        "": [
+            "metadata.json",
+            "config.json",
+            "template.xlsx",
+        ],
     },
     install_requires=[
         "openpyxl",

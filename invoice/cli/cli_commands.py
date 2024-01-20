@@ -291,8 +291,10 @@ def login(args):
 
 def init(args):
     """Create dummy data"""
-    if path_info.check_profiles_path():
-        asw = input("Profiles path already exists. Do you want to overwrite it? (y/n)")
+    if path_info.check_profiles_path(silent=True):
+        asw = input(
+            f"Profiles path already exists. {path_info.profiles}\nDo you want to overwrite it? (y/n)"
+        )
         if asw == "n":
             print("Aborted.")
             return
