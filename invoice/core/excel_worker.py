@@ -1,3 +1,4 @@
+import os
 import pathlib
 import traceback
 from typing import Any
@@ -15,7 +16,9 @@ class ExcelWorker:
     def __init__(self, path: str | None = None, sheet: int | None = None):
         # Check if either both parameters are provided or neither is provided
         if (path is None) != (sheet is None):
-            raise ValueError("Both 'path' and 'sheet' must be provided together or omitted")
+            raise ValueError(
+                "Both 'path' and 'sheet' must be provided together or omitted"
+            )
 
         self.path = path
         self.sheet = sheet
@@ -97,7 +100,7 @@ class ExcelWorker:
             # convert start and end cell to coordinates
             start_row, start_col = openpyxl.utils.cell.coordinate_to_tuple(start_cell)
             end_row, end_col = openpyxl.utils.cell.coordinate_to_tuple(end_cell)
-            
+
             # generate column letter for usecols
             start_col_letter = openpyxl.utils.cell.get_column_letter(start_col)
             end_col_letter = openpyxl.utils.cell.get_column_letter(end_col)
@@ -113,10 +116,10 @@ class ExcelWorker:
                 usecols=f"{start_col_letter}:{end_col_letter}",
                 skiprows=start_row - 1,  # 0-indexed, unlike Excel
                 nrows=nrows,
-                engine="openpyxl"
+                engine="openpyxl",
             )
             # Replace NaN values with empty string
-            df.fillna('', inplace=True) # type: ignore
+            df.fillna("", inplace=True)  # type: ignore
 
             return df
         except Exception as e:
@@ -132,7 +135,7 @@ class ExcelWorker:
                 raise ValueError("Excel file not instantiated!")
             if self.path is None or self.sheet is None:
                 raise ValueError("Class must specify 'path' and 'sheet'!")
-            
+
             wb = openpyxl.load_workbook(wb_path)
             sheet = wb.worksheets[self.sheet]
             non_empty_rows = []
@@ -212,7 +215,7 @@ class ExcelWorker:
         try:
             if self.path is None or self.sheet is None:
                 raise ValueError("Class must specify 'path' and 'sheet'!")
-            
+
             wb = openpyxl.load_workbook(self.path)
             wb.save(self._instant_path)
             return self._instant_path
@@ -229,7 +232,8 @@ class ExcelWorker:
     def clean_up(self):
         """clean up instant excel file"""
         try:
-            file_io.delete_file(self._instant_path)
+            if os.path.exists(self._instant_path):
+                file_io.delete_file(self._instant_path)
         except Exception as e:
             print(f"Error cleaning up: {e}")
             traceback.print_exc()
