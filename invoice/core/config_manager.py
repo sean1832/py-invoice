@@ -2,8 +2,8 @@ import os
 
 from invoice.core import file_io
 
-from .config import CONFIG_PATH, METADATA_PATH
-
+METADATA_PATH = 'invoice/metadata.json'
+CONFIG_PATH = 'invoice/data/config.json'
 
 class MetadataManager:
     def __init__(self):
