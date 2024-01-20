@@ -1,3 +1,4 @@
+import os
 import smtplib
 from email import encoders
 from email.mime.base import MIMEBase
@@ -20,7 +21,6 @@ class Smtp:
             return True, None
         except Exception as e:
             return False, e
-        
 
     def send_email(self, recipient, subject, body, attach=None):
         """Send email"""
@@ -39,7 +39,7 @@ class Smtp:
             encoders.encode_base64(part)
             part.add_header(
                 "Content-Disposition",
-                f"attachment; filename= {attach}",
+                f"attachment; filename= {os.path.basename(attach)}",
             )
             message.attach(part)
 
