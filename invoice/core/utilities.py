@@ -8,8 +8,6 @@ from datetime import datetime
 from types import NotImplementedType
 from typing import Tuple
 
-import pandas as pd
-
 from . import file_io as io
 from .profile import Profile
 
