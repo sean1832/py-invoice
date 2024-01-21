@@ -232,6 +232,9 @@ def send(args):
     print(body)
 
     print("=== Attachment ===")
+    if cache_data["pdf_path"] is None:
+        print("No pdf file found. Please run 'invoice export' to create pdf file.")
+        return
     print(cache_data["pdf_path"])
 
     print("=== Confirmation ===")
